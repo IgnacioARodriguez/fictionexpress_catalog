@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'catalog',
+    'users',
 ]
 
 REST_FRAMEWORK = {
@@ -58,6 +59,8 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
