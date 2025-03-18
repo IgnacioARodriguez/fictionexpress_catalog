@@ -10,11 +10,12 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    user_service = UserService()
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def login(self, request):
         try:
-            token_data = UserService.authenticate_user(
+            token_data = self.user_service.authenticate_user(
                 email=request.data.get('email'), password=request.data.get('password')
             )
             return Response(token_data, status=status.HTTP_200_OK)
@@ -28,7 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = UserSerializer(data=request.data)
 
             if serializer.is_valid():
-                user_data = UserService.create_user(serializer.validated_data)
+                user_data = self.user_service.create_user(serializer.validated_data)
                 return Response(user_data, status=status.HTTP_201_CREATED)
 
             else:
@@ -41,7 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def logout(self, request):
         try:
             refresh_token = request.data.get('refresh')
-            UserService.logout_user(refresh_token)
+            self.user_service.logout_user(refresh_token)
             return Response({"message": "Logged out"}, status=status.HTTP_200_OK)
         
         except Exception as e:
@@ -53,7 +54,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
 
         try:
-            users = UserService.get_all_users()
+            users = self.user_service.get_all_users()
 
             if not users.exists():
                 return Response({"message": "No hay usuarios disponibles"}, status=status.HTTP_204_NO_CONTENT)
@@ -69,7 +70,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            user = UserService.get_user_by_id(pk)
+            user = self.user_service.get_user_by_id(pk)
             if not request.user.is_staff and request.user.id != user.id:
                 return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -87,7 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.user.id != int(pk):
             return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
         try:
-            user = UserService.update_user(pk, request.data)
+            user = self.user_service.update_user(pk, request.data)
             return Response(UserSerializer(user).data)
 
         except ValueError as e:
@@ -101,7 +102,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if not request.user.is_staff:
             return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
         try:
-            UserService.delete_user(pk)
+            self.user_service.delete_user(pk)
             return Response({"message": "Usuario eliminado"}, status=status.HTTP_204_NO_CONTENT)
 
         except ValueError as e:

@@ -3,10 +3,11 @@ from users.repositories.user_repository import UserRepository
 from users.dtos.user_dto import UserDTO
 
 class UserService:
+    def __init__(self, user_repository=None):
+        self.user_repository = user_repository or UserRepository()
 
-    @staticmethod
-    def authenticate_user(email, password):
-        user = UserRepository.get_user_by_email(email)
+    def authenticate_user(self, email, password):
+        user = self.user_repository.get_user_by_email(email) 
         if user is None:
             raise ValueError("User not found")
         if not user.check_password(password):
@@ -16,21 +17,19 @@ class UserService:
 
         return {'refresh': str(refresh), 'access': str(refresh.access_token)}
     
-    @staticmethod
-    def logout_user(refresh_token):
+    def logout_user(self, refresh_token):
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
         except Exception as e:
             raise ValueError("Invalid token")
     
-    @staticmethod
-    def create_user(data):
-        existing_user = UserRepository.get_user_by_email(data.get("email"))
+    def create_user(self, data):
+        existing_user = self.user_repository.get_user_by_email(data.get("email"))
         if existing_user:
             raise ValueError("El email ya está registrado")
 
-        user = UserRepository.create_user(
+        user = self.user_repository.create_user(
             username=data["username"],
             email=data["email"],
             password=data["password"],
@@ -51,30 +50,26 @@ class UserService:
 
         return user_data
     
-    @staticmethod
-    def get_user_by_id(user_id):
-        user = UserRepository.get_user_by_id(user_id)
+    def get_user_by_id(self, user_id):
+        user = self.user_repository.get_user_by_id(user_id)
         if not user:
             raise ValueError("Usuario no encontrado")
 
         return user
     
-    @staticmethod
-    def update_user(user_id, data):
-        user = UserRepository.get_user_by_id(user_id)
+    def update_user(self, user_id, data):
+        user = self.user_repository.get_user_by_id(user_id)
         if not user:
             raise ValueError("Usuario no encontrado")
 
-        return UserRepository.update_user(user, data)
+        return self.user_repository.update_user(user, data)
     
-    @staticmethod
-    def delete_user(user_id):
-        user = UserRepository.get_user_by_id(user_id)
+    def delete_user(self, user_id):
+        user = self.user_repository.get_user_by_id(user_id)
         if not user:
             raise ValueError("Usuario no encontrado")
 
-        return UserRepository.delete_user(user)
+        return self.user_repository.delete_user(user)
     
-    @staticmethod
-    def get_all_users():
-        return UserRepository.get_all_users()
+    def get_all_users(self):
+        return self.user_repository.get_all_users()

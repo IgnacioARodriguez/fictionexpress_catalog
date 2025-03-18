@@ -24,7 +24,7 @@ class UserRepository:
     
     @staticmethod
     def get_all_users():
-        return User.objects.all()
+        return User.objects.all().order_by('id')
     
     @staticmethod
     def update_user(user, data):
