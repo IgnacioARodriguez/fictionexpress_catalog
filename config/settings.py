@@ -51,7 +51,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES': {
         'user': '5/minute',  # Máximo 5 intentos de login por minuto
-    }
+    },
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 DATABASES = {

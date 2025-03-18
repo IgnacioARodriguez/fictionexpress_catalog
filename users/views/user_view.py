@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from users.serializers.user_serializer import UserSerializer
 from users.services.user_service import UserService
 from users.models import User
+from rest_framework.pagination import PageNumberPagination
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -53,7 +54,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
         try:
             users = UserService.get_all_users()
-            return Response(UserSerializer(users, many=True).data)
+
+            if not users.exists():
+                return Response({"message": "No hay usuarios disponibles"}, status=status.HTTP_204_NO_CONTENT)
+
+            paginator = PageNumberPagination()
+            paginated_users = paginator.paginate_queryset(users, request)
+
+            return paginator.get_paginated_response(UserSerializer(paginated_users, many=True).data)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
