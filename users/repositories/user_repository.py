@@ -1,5 +1,3 @@
-# users/repository.py
-from django.core.exceptions import ObjectDoesNotExist
 from users.models import User
 
 class UserRepository:
@@ -19,3 +17,23 @@ class UserRepository:
             raise 
         except Exception as e:
             raise
+
+    @staticmethod
+    def get_user_by_id(user_id):
+        return User.objects.filter(id=user_id).first()
+    
+    @staticmethod
+    def get_all_users():
+        return User.objects.all()
+    
+    @staticmethod
+    def update_user(user, data):
+        for key, value in data.items():
+            setattr(user, key, value)
+
+        user.save()
+        return user
+    
+    @staticmethod
+    def delete_user(user):
+        user.delete()

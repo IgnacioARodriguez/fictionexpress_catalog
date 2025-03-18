@@ -1,4 +1,3 @@
-# users/views.py
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,7 +14,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def login(self, request):
         try:
             token_data = UserService.authenticate_user(
-                request.data.get('email'), request.data.get('password')
+                email=request.data.get('email'), password=request.data.get('password')
             )
             return Response(token_data, status=status.HTTP_200_OK)
 
@@ -36,3 +35,58 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def list(self, request):
+        if not request.user.is_staff:
+            return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            users = UserService.get_all_users()
+            return Response(UserSerializer(users, many=True).data)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+    def retrieve(self, request, pk=None):
+        try:
+            user = UserService.get_user_by_id(pk)
+            if not request.user.is_staff and request.user.id != user.id:
+                return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
+
+            else:
+                return Response(UserSerializer(user).data)
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+    def update(self, request, pk=None):
+        if request.user.id != int(pk):
+            return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            user = UserService.update_user(pk, request.data)
+            return Response(UserSerializer(user).data)
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+    def destroy(self, request, pk=None):
+        if not request.user.is_staff:
+            return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            UserService.delete_user(pk)
+            return Response({"message": "Usuario eliminado"}, status=status.HTTP_204_NO_CONTENT)
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
