@@ -17,6 +17,14 @@ class UserService:
         return {'refresh': str(refresh), 'access': str(refresh.access_token)}
     
     @staticmethod
+    def logout_user(refresh_token):
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception as e:
+            raise ValueError("Invalid token")
+    
+    @staticmethod
     def create_user(data):
         existing_user = UserRepository.get_user_by_email(data.get("email"))
         if existing_user:

@@ -36,6 +36,17 @@ class UserViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def logout(self, request):
+        try:
+            refresh_token = request.data.get('refresh')
+            UserService.logout_user(refresh_token)
+            return Response({"message": "Logged out"}, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        
     def list(self, request):
         if not request.user.is_staff:
             return Response({"error": "No tienes permisos"}, status=status.HTTP_403_FORBIDDEN)
