@@ -74,14 +74,11 @@ def test_delete_user_as_admin(api_client, create_admin_user, create_test_user):
 def test_get_user_by_id(api_client, create_test_user):
     """Prueba obtener un usuario por ID"""
 
-    # 🔹 Autenticamos al usuario de prueba
     api_client.force_authenticate(user=create_test_user)
 
-    # 🔹 Hacemos la petición `GET /users/{id}/`
     url = reverse("user-detail", args=[create_test_user.id])
     response = api_client.get(url)
 
-    # 🔹 Verificamos la respuesta
     assert response.status_code == 200
     assert response.data["id"] == create_test_user.id
     assert response.data["email"] == create_test_user.email
