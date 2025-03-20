@@ -21,16 +21,16 @@ class BookService:
         Valida y crea un nuevo libro.
         """
         serializer = BookSerializer(data=data)
-        serializer.is_valid(raise_exception=True)  # 🔹 Validamos aquí
+        serializer.is_valid(raise_exception=True)
         return self.book_repository.create_book(serializer.validated_data)
     
     def update_book(self, book_id, data):
         """
         Valida y actualiza un libro existente.
         """
-        book = self.get_book_by_id(book_id)  # 🔹 Verificamos que el libro existe
+        book = self.get_book_by_id(book_id)
         serializer = BookSerializer(book, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)  # 🔹 Validamos los datos actualizados
+        serializer.is_valid(raise_exception=True)
         return self.book_repository.update_book(book, serializer.validated_data)
 
     def delete_book(self, book_id):

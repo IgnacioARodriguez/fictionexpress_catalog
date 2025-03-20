@@ -52,7 +52,7 @@ def book_service():
     with patch("books.services.book_service.BookRepository") as MockRepo:
         mock_repo = MockRepo.return_value
         service = BookService()
-        service.book_repository = mock_repo  # 🔹 Inyectamos el mock
+        service.book_repository = mock_repo 
         return service, mock_repo
     
 @pytest.fixture

@@ -16,7 +16,7 @@ def test_list_books_unauthenticated(api_client):
     """Prueba que un usuario no autenticado no pueda listar libros"""
     url = reverse("books-list")
     response = api_client.get(url)
-    assert response.status_code == 401  # Unauthorized
+    assert response.status_code == 401
 
 @pytest.mark.django_db
 def test_create_book_as_editor(api_client, create_editor_user):
@@ -35,7 +35,7 @@ def test_create_book_as_reader(api_client, create_reader_user):
     url = reverse("books-list")
     data = {"title": "Nuevo Libro", "author": "Nuevo Autor"}
     response = api_client.post(url, data)
-    assert response.status_code == 403  # Forbidden
+    assert response.status_code == 403 
 
 @pytest.mark.django_db
 def test_update_book_as_editor(api_client, create_editor_user, create_books):
@@ -54,17 +54,17 @@ def test_update_book_as_reader(api_client, create_reader_user, create_books):
     url = reverse("books-detail", args=[create_books[0].id])
     data = {"title": "Intento de Cambio"}
     response = api_client.put(url, data)
-    assert response.status_code == 403  # Forbidden
+    assert response.status_code == 403 
 
 @pytest.mark.django_db
 def test_update_book_invalid_data(api_client, create_editor_user, create_books):
     """Prueba que un editor NO pueda actualizar un libro con datos inválidos"""
     api_client.force_authenticate(user=create_editor_user)
     url = reverse("books-detail", args=[create_books[0].id])
-    data = {"title": ""}  # Título vacío (debería fallar si hay validaciones)
+    data = {"title": ""}
     response = api_client.put(url, data)
     print('ACA', response.data)
-    assert response.status_code == 400  # Bad Request
+    assert response.status_code == 400
 
 @pytest.mark.django_db
 def test_delete_book_as_editor(api_client, create_editor_user, create_books):
@@ -72,7 +72,7 @@ def test_delete_book_as_editor(api_client, create_editor_user, create_books):
     api_client.force_authenticate(user=create_editor_user)
     url = reverse("books-detail", args=[create_books[0].id])
     response = api_client.delete(url)
-    assert response.status_code == 204  # No Content
+    assert response.status_code == 204
 
 @pytest.mark.django_db
 def test_delete_book_as_reader(api_client, create_reader_user, create_books):
@@ -80,13 +80,13 @@ def test_delete_book_as_reader(api_client, create_reader_user, create_books):
     api_client.force_authenticate(user=create_reader_user)
     url = reverse("books-detail", args=[create_books[0].id])
     response = api_client.delete(url)
-    assert response.status_code == 403  # Forbidden
+    assert response.status_code == 403 
 
 @pytest.mark.django_db
 def test_delete_book_unauthenticated(api_client, create_books):
     """Prueba que un usuario no autenticado NO pueda eliminar libros"""
     url = reverse("books-detail", args=[create_books[0].id])
     response = api_client.delete(url)
-    assert response.status_code == 401  # Unauthorized
+    assert response.status_code == 401 
 
 

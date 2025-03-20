@@ -24,7 +24,7 @@ def test_list_book_pages_unauthenticated(api_client, create_book_with_pages):
 def test_list_pages_of_nonexistent_book(api_client, create_editor_user):
     """Prueba que obtener páginas de un libro inexistente retorne 404"""
     api_client.force_authenticate(user=create_editor_user)
-    url = reverse("bookpage-list", args=[999])  # ID inexistente
+    url = reverse("bookpage-list", args=[999])
     response = api_client.get(url)
 
     assert response.status_code == 404 

@@ -8,7 +8,7 @@ from books.docs import list_book_pages_docs
 
 class BookPagePagination(PageNumberPagination):
     """Configuración de paginación para las páginas de los libros."""
-    page_size = 10  # 🔹 Número de páginas por solicitud
+    page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 100
 

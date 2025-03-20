@@ -6,11 +6,11 @@ from rest_framework.exceptions import NotFound, ValidationError
 def test_get_books(book_service):
     """Prueba que get_books retorne todos los libros"""
     service, mock_repo = book_service
-    mock_repo.get_all_books.return_value = ["Libro 1", "Libro 2"]  # 🔹 Simulamos la respuesta del repo
+    mock_repo.get_all_books.return_value = ["Libro 1", "Libro 2"]
 
     books = service.get_books()
     assert books == ["Libro 1", "Libro 2"]
-    mock_repo.get_all_books.assert_called_once()  # ✅ Aseguramos que se llame al repo
+    mock_repo.get_all_books.assert_called_once()
 
 @pytest.mark.django_db
 def test_get_book_by_id_found(book_service):
@@ -26,7 +26,7 @@ def test_get_book_by_id_found(book_service):
 def test_get_book_by_id_not_found(book_service):
     """Prueba que get_book_by_id lance NotFound si el libro no existe"""
     service, mock_repo = book_service
-    mock_repo.get_book_by_id.return_value = None  # 🔹 Simulamos que el libro no existe
+    mock_repo.get_book_by_id.return_value = None
 
     with pytest.raises(NotFound, match="Libro no encontrado"):
         service.get_book_by_id(999)
@@ -47,7 +47,7 @@ def test_create_book_invalid(book_service):
     service, mock_repo = book_service
 
     with pytest.raises(ValidationError):
-        service.create_book({"title": ""})  # 🔹 Título vacío (inválido)
+        service.create_book({"title": ""})
 
 @pytest.mark.django_db
 def test_update_book_valid(book_service):
@@ -65,7 +65,7 @@ def test_update_book_valid(book_service):
 def test_update_book_not_found(book_service):
     """Prueba que update_book lance NotFound si el libro no existe"""
     service, mock_repo = book_service
-    mock_repo.get_book_by_id.return_value = None  # 🔹 Simulamos que el libro no existe
+    mock_repo.get_book_by_id.return_value = None
 
     with pytest.raises(NotFound, match="Libro no encontrado"):
         service.update_book(999, {"title": "Intento de Cambio"})
@@ -84,7 +84,7 @@ def test_delete_book_valid(book_service):
 def test_delete_book_not_found(book_service):
     """Prueba que delete_book lance NotFound si el libro no existe"""
     service, mock_repo = book_service
-    mock_repo.get_book_by_id.return_value = None  # 🔹 Simulamos que el libro no existe
+    mock_repo.get_book_by_id.return_value = None
 
     with pytest.raises(NotFound, match="Libro no encontrado"):
         service.delete_book(999)
