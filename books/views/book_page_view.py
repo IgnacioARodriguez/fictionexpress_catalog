@@ -1,8 +1,9 @@
 from rest_framework import viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from books.services.book_page_servicce import BookPageService
-from books.serializers.book_serializer import BookPageSerializer
+from books.serializers.book_page_serializer import BookPageSerializer
 from rest_framework.response import Response
+from books.docs import list_book_pages_docs
 
 
 class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -13,6 +14,7 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
         super().__init__(**kwargs)
         self.page_service = BookPageService()
 
+    @list_book_pages_docs
     def list(self, request, book_id=None):
         try:
             pages = self.page_service.get_book_pages(book_id)

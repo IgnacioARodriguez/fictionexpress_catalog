@@ -5,6 +5,9 @@ from books.serializers.book_serializer import BookSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from books.permissions.book_permissions import IsEditorOrReadOnly
+from books.docs import (  
+    list_books_docs, retrieve_book_docs, create_book_docs, delete_book_docs
+)
 
 class BookViewSet(viewsets.ViewSet):
     serializer_class = BookSerializer
@@ -14,6 +17,7 @@ class BookViewSet(viewsets.ViewSet):
         super().__init__(**kwargs)
         self.book_service = BookService()
 
+    @list_books_docs
     def list(self, request):
             try:
                 books = self.book_service.get_books()
@@ -29,6 +33,7 @@ class BookViewSet(viewsets.ViewSet):
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @retrieve_book_docs
     def retrieve(self, request, pk=None):
         try:
             book = self.book_service.get_book_by_id(pk)
@@ -38,6 +43,7 @@ class BookViewSet(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @create_book_docs
     def create(self, request):
         try:
             book = self.book_service.create_book(request.data)
@@ -47,6 +53,7 @@ class BookViewSet(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @delete_book_docs
     def destroy(self, request, pk=None):
         try:
             self.book_service.delete_book(pk)
