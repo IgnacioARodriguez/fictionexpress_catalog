@@ -15,6 +15,13 @@ class BookService:
 
     def create_book(self, data):
         return self.book_repository.create_book(data)
+    
+    def update_book(self, book_id, data):
+        book = self.book_repository.get_book_by_id(book_id)
+        if not book:
+            raise ValueError("Libro no encontrado")
+
+        return self.book_repository.update_book(book, data)
 
     def delete_book(self, book_id):
         book = self.book_repository.get_book_by_id(book_id)

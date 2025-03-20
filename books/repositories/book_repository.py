@@ -19,6 +19,13 @@ class BookRepository:
             BookPage.objects.create(book=book, **page_data)
 
         return book
+    
+    @staticmethod
+    def update_book(book, data):
+        for key, value in data.items():
+            setattr(book, key, value) 
+        book.save()
+        return book
 
     @staticmethod
     def delete_book(book):
