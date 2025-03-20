@@ -6,11 +6,13 @@ from users.models import User
 
 @pytest.fixture
 def mock_user_repository():
+    """Mock UserRepository class"""
     mock_repo = MagicMock(spec=UserRepository)
     return mock_repo
 
 @patch("users.services.user_service.RefreshToken")
 def test_create_user(mock_refresh_token, mock_user_repository):
+    """ Test create_user method of UserService """
     user_data = {
         "username": "newuser",
         "email": "newuser@example.com",
@@ -48,6 +50,7 @@ def test_create_user(mock_refresh_token, mock_user_repository):
 
 @patch("users.services.user_service.RefreshToken") 
 def test_authenticate_user(mock_refresh_token, mock_user_repository):
+    """ Test authenticate_user method of UserService """
     user_mock = MagicMock()
     user_mock.id = 1
     user_mock.username = "testuser"
@@ -74,6 +77,7 @@ def test_authenticate_user(mock_refresh_token, mock_user_repository):
 
     
 def test_get_user_by_id(mock_user_repository):
+    """ Test get_user_by_id method of UserService """
     mock_user = MagicMock(id=1, username="testuser", email="test@example.com")
     mock_user_repository.get_user_by_id.return_value = mock_user
 
@@ -85,6 +89,7 @@ def test_get_user_by_id(mock_user_repository):
 
 
 def test_update_user(mock_user_repository):
+    """ Test update_user method of UserService """
     mock_user = MagicMock(id=1, username="olduser", email="old@example.com")
     mock_user_repository.get_user_by_id.return_value = mock_user
     mock_user_repository.update_user.return_value = mock_user
@@ -97,6 +102,7 @@ def test_update_user(mock_user_repository):
 
 
 def test_delete_user(mock_user_repository):
+    """ Test delete_user method of UserService """
     mock_user = MagicMock(id=1)
     mock_user_repository.get_user_by_id.return_value = mock_user
 
@@ -108,6 +114,7 @@ def test_delete_user(mock_user_repository):
 
 @patch("users.services.user_service.RefreshToken")
 def test_logout_user(mock_refresh_token):
+    """ Test logout_user method of UserService """
     mock_refresh_instance = MagicMock()
     mock_refresh_token.return_value = mock_refresh_instance
 
