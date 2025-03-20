@@ -1,3 +1,4 @@
+import logging
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -5,6 +6,8 @@ from rest_framework.exceptions import NotFound
 from books.services.book_page_servicce import BookPageService
 from books.serializers.book_page_serializer import BookPageSerializer
 from books.docs import list_book_pages_docs
+
+logger = logging.getLogger(__name__)
 
 class BookPagePagination(PageNumberPagination):
     """
@@ -48,17 +51,22 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
         :raises Exception: If an unexpected server error occurs.
         """
         try:
+            logger.info(f"Fetching pages for book ID {book_id}")
             pages = self.page_service.get_book_pages(book_id)
 
             if not pages.exists():
+                logger.warning(f"No pages found for book ID {book_id}")
                 raise NotFound("No pages available for this book")
 
             paginator = self.pagination_class()
             paginated_pages = paginator.paginate_queryset(pages, request)
+            logger.info(f"Retrieved {pages.count()} pages for book ID {book_id}")
 
             return paginator.get_paginated_response(BookPageSerializer(paginated_pages, many=True).data)
 
         except NotFound as e:
+            logger.warning(f"Page retrieval failed: {e}")
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            logger.error(f"Unexpected error retrieving pages for book ID {book_id}: {e}")
             return Response({"error": "Internal server error", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -3,13 +3,13 @@ from django.contrib.auth import get_user_model
 from books.models import Book, BookPage
 from unittest.mock import patch
 from books.services.book_service import BookService
+from rest_framework.test import APIClient
 
 User = get_user_model()
 
 @pytest.fixture
 def api_client():
     """Create an instance of the Django test client"""
-    from rest_framework.test import APIClient
     return APIClient()
 
 @pytest.fixture
@@ -48,11 +48,11 @@ def create_book_with_many_pages(db, create_editor_user):
 
 @pytest.fixture
 def book_service():
-    """Create a BookService instance with a mocked repository"""
+    """Creates a BookService instance with a mocked repository."""
     with patch("books.services.book_service.BookRepository") as MockRepo:
         mock_repo = MockRepo.return_value
         service = BookService()
-        service.book_repository = mock_repo 
+        service.book_repository = mock_repo
         return service, mock_repo
     
 @pytest.fixture

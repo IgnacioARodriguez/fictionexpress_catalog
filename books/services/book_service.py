@@ -1,7 +1,9 @@
+import logging
 from books.repositories.book_repository import BookRepository
 from books.serializers.book_serializer import BookSerializer
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 
+logger = logging.getLogger(__name__)  # Initialize logger for this module
 
 class BookService:
     """
@@ -20,7 +22,13 @@ class BookService:
 
         :return: QuerySet containing all books.
         """
-        return self.book_repository.get_all_books()
+        try:
+            books = self.book_repository.get_all_books()
+            logger.info(f"Retrieved {len(books)} books from the database.")  # ✅ Log successful retrieval
+            return books
+        except Exception as e:
+            logger.error(f"Error retrieving all books: {e}")  # ✅ Log unexpected errors
+            return None
 
     def get_book_by_id(self, book_id):
         """
@@ -30,10 +38,16 @@ class BookService:
         :return: The book instance if found.
         :raises NotFound: If the book does not exist.
         """
-        book = self.book_repository.get_book_by_id(book_id)
-        if not book:
-            raise NotFound("Book not found")
-        return book
+        try:
+            book = self.book_repository.get_book_by_id(book_id)
+            if not book:
+                logger.warning(f"Book not found: ID {book_id}")  # ✅ Log when book is not found
+                raise NotFound("Book not found")
+            logger.info(f"Book retrieved successfully: ID {book_id}")  # ✅ Log successful retrieval
+            return book
+        except Exception as e:
+            logger.error(f"Error retrieving book ID {book_id}: {e}")  # ✅ Log unexpected errors
+            raise
 
     def create_book(self, data):
         """
@@ -43,10 +57,20 @@ class BookService:
         :return: The created book instance.
         :raises ValidationError: If validation fails.
         """
-        serializer = BookSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        return self.book_repository.create_book(serializer.validated_data)
-    
+        try:
+            serializer = BookSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            book = self.book_repository.create_book(serializer.validated_data)
+            print('ACA', book)
+            logger.info(f"Book created successfully")  # ✅ Log successful creation
+            return book
+        except ValidationError as e:
+            logger.warning(f"Book creation failed (validation error): {e}")  # ✅ Log validation errors
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error creating book: {e}")  # ✅ Log unexpected errors
+            raise
+
     def update_book(self, book_id, data):
         """
         Validates and updates an existing book.
@@ -57,10 +81,22 @@ class BookService:
         :raises NotFound: If the book does not exist.
         :raises ValidationError: If validation fails.
         """
-        book = self.get_book_by_id(book_id)
-        serializer = BookSerializer(book, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        return self.book_repository.update_book(book, serializer.validated_data)
+        try:
+            book = self.get_book_by_id(book_id)
+            serializer = BookSerializer(book, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            updated_book = self.book_repository.update_book(book, serializer.validated_data)
+            logger.info(f"Book updated successfully")  # ✅ Log successful update
+            return updated_book
+        except NotFound as e:
+            logger.warning(f"Book update failed: ID {book_id} not found")  # ✅ Log book not found
+            raise
+        except ValidationError as e:
+            logger.warning(f"Book update failed (validation error): {e}")  # ✅ Log validation errors
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error updating book ID {book_id}: {e}")  # ✅ Log unexpected errors
+            raise
 
     def delete_book(self, book_id):
         """
@@ -70,7 +106,14 @@ class BookService:
         :return: None
         :raises NotFound: If the book does not exist.
         """
-        book = self.book_repository.get_book_by_id(book_id)
-        if not book:
-            raise NotFound("Book not found")
-        self.book_repository.delete_book(book)
+        try:
+            book = self.book_repository.get_book_by_id(book_id)
+            if not book:
+                logger.warning(f"Book deletion failed: ID {book_id} not found")  # ✅ Log book not found
+                raise NotFound("Book not found")
+
+            self.book_repository.delete_book(book)
+            logger.info(f"Book deleted successfully: ID {book_id}")  # ✅ Log successful deletion
+        except Exception as e:
+            logger.error(f"Unexpected error deleting book ID {book_id}: {e}")  # ✅ Log unexpected errors
+            raise
