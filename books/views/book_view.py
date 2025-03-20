@@ -2,21 +2,32 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from books.services.book_service import BookService
 from books.serializers.book_serializer import BookSerializer
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from books.permissions.book_permissions import IsEditorOrReadOnly
 
 class BookViewSet(viewsets.ViewSet):
     serializer_class = BookSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated, IsEditorOrReadOnly]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.book_service = BookService()
 
     def list(self, request):
-        try:
-            books = self.book_service.get_books()
-            return Response(BookSerializer(books, many=True).data)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                books = self.book_service.get_books()
+
+                if not books.exists():
+                    return Response({"message": "No hay libros disponibles"}, status=status.HTTP_204_NO_CONTENT)
+
+                paginator = PageNumberPagination()
+                paginated_books = paginator.paginate_queryset(books, request)
+
+                return paginator.get_paginated_response(BookSerializer(paginated_books, many=True).data)
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def retrieve(self, request, pk=None):
         try:

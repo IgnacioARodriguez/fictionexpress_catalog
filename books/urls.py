@@ -8,5 +8,5 @@ router.register("books", BookViewSet, basename="books")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("books/<int:book_id>/pages/", BookPageViewSet.as_view({"get": "list"})),
+    path("<int:book_id>/pages/", BookPageViewSet.as_view({"get": "list"})),
 ]

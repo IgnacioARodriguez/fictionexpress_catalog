@@ -1,4 +1,5 @@
 from books.models import Book
+from books.models import BookPage
 
 class BookRepository:
     @staticmethod
@@ -11,7 +12,13 @@ class BookRepository:
 
     @staticmethod
     def create_book(data):
-        return Book.objects.create(**data)
+        pages_data = data.pop("pages", []) 
+        book = Book.objects.create(**data) 
+
+        for page_data in pages_data:
+            BookPage.objects.create(book=book, **page_data)
+
+        return book
 
     @staticmethod
     def delete_book(book):
