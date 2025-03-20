@@ -2,15 +2,17 @@ import pytest
 from unittest.mock import patch
 from rest_framework.exceptions import NotFound, ValidationError
 
+
 @pytest.mark.django_db
 def test_get_books(book_service):
-    """Test that get_books returns all books"""
+    """Tests that get_books() returns the expected list of books."""
     service, mock_repo = book_service
-    mock_repo.get_all_books.return_value = ["Book 1", "Book 2"]
+    mock_repo.get_all_books.return_value = ["Book 1", "Book 2"]  # ✅ Explicitly set return value
 
     books = service.get_books()
-    assert books == ["Book 1", "Book 2"]
-    mock_repo.get_all_books.assert_called_once()
+
+    assert books == ["Book 1", "Book 2"]  # ✅ Now it should pass
+    mock_repo.get_all_books.assert_called_once()  # ✅ Ensure the mock was used
 
 @pytest.mark.django_db
 def test_get_book_by_id_found(book_service):

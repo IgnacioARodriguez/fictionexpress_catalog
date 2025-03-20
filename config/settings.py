@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import sys
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -107,6 +108,61 @@ if "pytest" in sys.modules:
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} - {name} - {levelname} - {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} - {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "INFO",  # 🔹 Set minimum logging level to INFO
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/debug.log"),
+            "formatter": "verbose",
+        },
+        "console": {
+            "level": "WARNING",  # 🔹 Show only warnings and errors in the console
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file", "console"],
+            "level": "WARNING",  # 🔹 Ignore DEBUG logs from Django
+            "propagate": True,
+        },
+        "django.utils.autoreload": {
+            "handlers": ["file"],
+            "level": "ERROR",  # 🔹 Hide autoreload DEBUG logs
+            "propagate": False,
+        },
+        "rest_framework": {
+            "handlers": ["file"],
+            "level": "ERROR",  # 🔹 Suppress unnecessary DRF logs
+            "propagate": False,
+        },
+        "users": {
+            "handlers": ["file", "console"],
+            "level": "INFO",  # 🔹 Your app's logs at INFO level
+            "propagate": False,
+        },
+        "books": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 AUTH_USER_MODEL = 'users.User'
 
