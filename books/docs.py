@@ -2,14 +2,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from books.serializers.book_serializer import BookSerializer
 from books.serializers.book_page_serializer import BookPageSerializer
 
-# 📌 Documentación para `GET /api/books/`
 list_books_docs = extend_schema(
     summary="Lista todos los libros",
     description="Obtiene una lista paginada de libros disponibles. No incluye las páginas de los libros.",
     responses={200: BookSerializer(many=True)}
 )
 
-# 📌 Documentación para `GET /api/books/{id}/`
 retrieve_book_docs = extend_schema(
     summary="Obtiene un libro por ID",
     description="Devuelve la información detallada de un libro. No incluye las páginas.",
@@ -19,7 +17,6 @@ retrieve_book_docs = extend_schema(
     ]
 )
 
-# 📌 Documentación para `POST /api/books/`
 create_book_docs = extend_schema(
     summary="Crea un nuevo libro",
     description="Registra un nuevo libro con su título y autor.",
@@ -27,7 +24,6 @@ create_book_docs = extend_schema(
     responses={201: BookSerializer()}
 )
 
-# 📌 Documentación para `DELETE /api/books/{id}/`
 delete_book_docs = extend_schema(
     summary="Elimina un libro",
     description="Elimina un libro de la base de datos. Solo los editores pueden realizar esta acción.",
@@ -37,7 +33,6 @@ delete_book_docs = extend_schema(
     ]
 )
 
-# 📌 Documentación para `GET /api/books/{id}/pages/`
 list_book_pages_docs = extend_schema(
     summary="Lista las páginas de un libro",
     description="Devuelve una lista paginada de las páginas de un libro específico.",
