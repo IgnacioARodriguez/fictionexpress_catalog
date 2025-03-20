@@ -2,14 +2,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from users.serializers.user_serializer import UserSerializer
 
-# 📌 Documentación para listar usuarios
 list_users_docs = extend_schema(
     summary="Lista todos los usuarios",
     description="Devuelve una lista paginada de usuarios. Solo accesible por administradores.",
     responses={200: UserSerializer(many=True)},
 )
 
-# 📌 Documentación para obtener un usuario por ID
 get_user_by_id_docs = extend_schema(
     summary="Obtiene los detalles de un usuario",
     description="Devuelve la información de un usuario dado su ID. Solo accesible por administradores y el mismo usuario.",
@@ -19,7 +17,6 @@ get_user_by_id_docs = extend_schema(
     responses={200: UserSerializer()},
 )
 
-# 📌 Documentación para crear un usuario
 create_user_docs = extend_schema(
     summary="Crea un nuevo usuario",
     description="Registra un nuevo usuario con los datos proporcionados.",
@@ -30,7 +27,6 @@ create_user_docs = extend_schema(
     },
 )
 
-# 📌 Documentación para actualizar un usuario
 update_user_docs = extend_schema(
     summary="Actualiza un usuario",
     description="Modifica la información de un usuario existente. Solo accesible por administradores y el mismo usuario.",
@@ -46,7 +42,6 @@ update_user_docs = extend_schema(
     },
 )
 
-# 📌 Documentación para eliminar un usuario
 delete_user_docs = extend_schema(
     summary="Elimina un usuario",
     description="Elimina un usuario por su ID. Solo accesible por administradores.",
@@ -60,7 +55,6 @@ delete_user_docs = extend_schema(
     },
 )
 
-# 📌 Documentación para autenticación (Login)
 login_user_docs = extend_schema(
     summary="Autenticación de usuario",
     description="Inicia sesión y obtiene un token JWT.",
@@ -85,7 +79,6 @@ login_user_docs = extend_schema(
     },
 )
 
-# 📌 Documentación para Logout
 logout_user_docs = extend_schema(
     summary="Cierra sesión",
     description="Revoca el token de refresco y cierra sesión del usuario.",
