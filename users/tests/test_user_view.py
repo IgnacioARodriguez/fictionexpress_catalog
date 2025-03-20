@@ -3,6 +3,7 @@ import pytest
 
 @pytest.mark.django_db
 def test_list_users_as_admin(api_client, create_admin_user):
+    """Test to list users as an admin"""
     api_client.force_authenticate(user=create_admin_user)
 
     url = reverse("user-list")
@@ -13,6 +14,7 @@ def test_list_users_as_admin(api_client, create_admin_user):
 
 @pytest.mark.django_db
 def test_list_users_as_reader(api_client, create_test_user):
+    """Test to list users as a reader"""
     api_client.force_authenticate(user=create_test_user)
 
     url = reverse("user-list")
@@ -22,6 +24,7 @@ def test_list_users_as_reader(api_client, create_test_user):
 
 @pytest.mark.django_db
 def test_create_user(api_client):
+    """Test to create a new user"""
     url = reverse("user-signup")
     data = {
         "username": "newuser",
@@ -36,6 +39,7 @@ def test_create_user(api_client):
 
 @pytest.mark.django_db
 def test_authenticate_user(api_client, create_test_user):
+    """Test to authenticate a user"""
     url = reverse("user-login")
     data = {
         "email": create_test_user.email,
@@ -51,6 +55,7 @@ def test_authenticate_user(api_client, create_test_user):
 
 @pytest.mark.django_db
 def test_update_user(api_client, create_test_user):
+    """Test to update a user"""
     api_client.force_authenticate(user=create_test_user)
 
     url = reverse("user-detail", args=[create_test_user.id])
@@ -63,6 +68,7 @@ def test_update_user(api_client, create_test_user):
 
 @pytest.mark.django_db
 def test_delete_user_as_admin(api_client, create_admin_user, create_test_user):
+    """Test to delete a user as an admin"""
     api_client.force_authenticate(user=create_admin_user)
 
     url = reverse("user-detail", args=[create_test_user.id])
@@ -72,8 +78,7 @@ def test_delete_user_as_admin(api_client, create_admin_user, create_test_user):
 
 @pytest.mark.django_db
 def test_get_user_by_id(api_client, create_test_user):
-    """Prueba obtener un usuario por ID"""
-
+    """Test to get a user by ID"""
     api_client.force_authenticate(user=create_test_user)
 
     url = reverse("user-detail", args=[create_test_user.id])
