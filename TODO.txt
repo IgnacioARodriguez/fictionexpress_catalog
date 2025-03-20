@@ -1,0 +1,3 @@
+- Swagger endpoint para obtener detalles de un usuario tiene para poner dos ids.
+- Lo mismo asa con el actualizar usuario
+- Lo mismo para eliminar usuario
