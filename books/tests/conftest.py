@@ -8,30 +8,30 @@ User = get_user_model()
 
 @pytest.fixture
 def api_client():
-    """Cliente de pruebas para la API"""
+    """Create an instance of the Django test client"""
     from rest_framework.test import APIClient
     return APIClient()
 
 @pytest.fixture
 def create_editor_user(db):
-    """Crea un usuario con rol editor"""
+    """Create a user with editor role"""
     return User.objects.create_user(username="editor", email="editor@example.com", password="password123", role="editor")
 
 @pytest.fixture
 def create_reader_user(db):
-    """Crea un usuario con rol reader"""
+    """Create a user with reader role"""
     return User.objects.create_user(username="reader", email="reader@example.com", password="password123", role="reader")
 
 @pytest.fixture
 def create_books(db):
-    """Crea libros de prueba"""
+    """Create two books to test the list view"""
     book1 = Book.objects.create(title="Libro 1", author="Autor 1")
     book2 = Book.objects.create(title="Libro 2", author="Autor 2")
     return [book1, book2]
 
 @pytest.fixture
 def create_book_with_pages(db, create_editor_user):
-    """Crea un libro con 2 páginas de prueba y lo asigna a un usuario real"""
+    """Crear un libro con páginas para probar la relación uno a muchos"""
     book = Book.objects.create(title="Libro con Páginas", author=create_editor_user)
     BookPage.objects.create(book=book, page_number=1, content="Contenido de la página 1")
     BookPage.objects.create(book=book, page_number=2, content="Contenido de la página 2")
@@ -40,7 +40,7 @@ def create_book_with_pages(db, create_editor_user):
 
 @pytest.fixture
 def create_book_with_many_pages(db, create_editor_user):
-    """Crea un libro con muchas páginas para probar la paginación"""
+    """Create a book with many pages to test the one-to-many relationship"""
     book = Book.objects.create(title="Libro con Muchas Páginas", author=create_editor_user)
     for i in range(1, 21): 
         BookPage.objects.create(book=book, page_number=i, content=f"Contenido de la página {i}")
@@ -48,7 +48,7 @@ def create_book_with_many_pages(db, create_editor_user):
 
 @pytest.fixture
 def book_service():
-    """Crea una instancia de BookService con un repositorio mockeado"""
+    """Create a BookService instance with a mocked repository"""
     with patch("books.services.book_service.BookRepository") as MockRepo:
         mock_repo = MockRepo.return_value
         service = BookService()
@@ -57,10 +57,10 @@ def book_service():
     
 @pytest.fixture
 def editor_user(db):
-    """Crea un usuario con rol editor"""
+    """Create a user with editor role"""
     return User.objects.create_user(username="editor", email="editor@example.com", password="password123", role="editor")
 
 @pytest.fixture
 def reader_user(db):
-    """Crea un usuario con rol reader"""
+    """Create a user with reader role"""
     return User.objects.create_user(username="reader", email="reader@example.com", password="password123", role="reader")

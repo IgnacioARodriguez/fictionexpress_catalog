@@ -3,7 +3,7 @@ from django.urls import reverse
 
 @pytest.mark.django_db
 def test_list_book_pages(api_client, create_book_with_pages):
-    """Prueba obtener las páginas de un libro con paginación"""
+    """Test to list pages of a book"""
     api_client.force_authenticate(user=create_book_with_pages.author)
     url = reverse("bookpage-list", kwargs={"book_id": create_book_with_pages.id})
     response = api_client.get(url)
@@ -14,7 +14,7 @@ def test_list_book_pages(api_client, create_book_with_pages):
 
 @pytest.mark.django_db
 def test_list_book_pages_unauthenticated(api_client, create_book_with_pages):
-    """Prueba que un usuario no autenticado no pueda ver páginas de un libro"""
+    """Test to list pages of a book without authentication"""
     url = reverse("bookpage-list", args=[create_book_with_pages.id])
     response = api_client.get(url)
 
@@ -22,7 +22,7 @@ def test_list_book_pages_unauthenticated(api_client, create_book_with_pages):
 
 @pytest.mark.django_db
 def test_list_pages_of_nonexistent_book(api_client, create_editor_user):
-    """Prueba que obtener páginas de un libro inexistente retorne 404"""
+    """Test to list pages of a nonexistent book"""
     api_client.force_authenticate(user=create_editor_user)
     url = reverse("bookpage-list", args=[999])
     response = api_client.get(url)
@@ -31,7 +31,7 @@ def test_list_pages_of_nonexistent_book(api_client, create_editor_user):
 
 @pytest.mark.django_db
 def test_list_book_pages_pagination(api_client, create_book_with_many_pages):
-    """Prueba que las páginas de un libro sean paginadas correctamente"""
+    """Test to list pages of a book with pagination"""
     api_client.force_authenticate(user=create_book_with_many_pages.author)
     url = reverse("bookpage-list", args=[create_book_with_many_pages.id])
     response = api_client.get(url, {"page": 1, "page_size": 5}) 
@@ -42,7 +42,7 @@ def test_list_book_pages_pagination(api_client, create_book_with_many_pages):
 
 @pytest.mark.django_db
 def test_list_book_pages_invalid_page(api_client, create_book_with_pages):
-    """Prueba que solicitar una página inexistente devuelva error"""
+    """Test to list pages of a book with an invalid page number"""
     api_client.force_authenticate(user=create_book_with_pages.author)
     url = reverse("bookpage-list", args=[create_book_with_pages.id])
     response = api_client.get(url, {"page": 999})
