@@ -2,6 +2,13 @@ import pytest
 from users.models import User
 from django.conf import settings
 from rest_framework.test import APIClient
+import django
+
+# @pytest.fixture(scope="session", autouse=True)
+# def setup_django():
+#     """Configura Django antes de correr los tests"""
+#     if not settings.configured:
+#         django.setup()
 
 @pytest.fixture
 def api_client():
@@ -24,7 +31,3 @@ def create_admin_user(db):
         email="admin@example.com",
         password="adminpassword",
     )
-
-@pytest.fixture(autouse=True)
-def print_db():
-    print(f"Base de datos usada para los tests: {settings.DATABASES['default']['ENGINE']}")

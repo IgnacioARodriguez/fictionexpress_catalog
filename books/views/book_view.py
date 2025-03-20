@@ -45,8 +45,8 @@ class BookViewSet(viewsets.ViewSet):
 
             return paginator.get_paginated_response(BookSerializer(paginated_books, many=True).data)
 
-        except Exception:
-            return Response({"error": "Error interno del servidor"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"error": "Error interno del servidor", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @retrieve_book_docs
     def retrieve(self, request, pk=None):

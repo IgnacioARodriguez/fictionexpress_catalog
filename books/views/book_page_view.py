@@ -33,7 +33,7 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
             pages = self.page_service.get_book_pages(book_id)
 
             if not pages.exists():
-                raise NotFound("No hay páginas para este libro")  # 🔹 Mejor manejo del error
+                raise NotFound("No hay páginas para este libro")
 
             paginator = self.pagination_class()
             paginated_pages = paginator.paginate_queryset(pages, request)
@@ -42,5 +42,5 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
 
         except NotFound as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return Response({"error": "Error interno del servidor"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"error": "Error interno del servidor", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

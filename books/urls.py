@@ -5,8 +5,8 @@ from books.views.book_page_view import BookPageViewSet
 
 router = DefaultRouter()
 router.register("books", BookViewSet, basename="books")
+router.register(r"books/(?P<book_id>\d+)/pages", BookPageViewSet, basename="bookpage")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("<int:book_id>/pages/", BookPageViewSet.as_view({"get": "list"})),
 ]
