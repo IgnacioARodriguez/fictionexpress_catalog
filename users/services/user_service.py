@@ -1,6 +1,9 @@
+import logging
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.repositories.user_repository import UserRepository
 from users.dtos.user_dto import UserDTO
+
+logger = logging.getLogger(__name__)  
 
 class UserService:
     """
@@ -27,11 +30,15 @@ class UserService:
         """
         user = self.user_repository.get_user_by_email(email)
         if user is None:
+            logger.warning(f"Authentication failed: User with email {email} not found") 
             raise ValueError("User not found")
+
         if not user.check_password(password):
+            logger.warning(f"Authentication failed: Invalid password for user {email}") 
             raise ValueError("Invalid credentials")
 
         refresh = RefreshToken.for_user(user)
+        logger.info(f"User {email} authenticated successfully") 
         return {'refresh': str(refresh), 'access': str(refresh.access_token)}
     
     def logout_user(self, refresh_token):
@@ -44,7 +51,9 @@ class UserService:
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
+            logger.info("User logged out successfully") 
         except Exception:
+            logger.error("Invalid token provided for logout") 
             raise ValueError("Invalid token")
     
     def create_user(self, data):
@@ -57,6 +66,7 @@ class UserService:
         """
         existing_user = self.user_repository.get_user_by_email(data.get("email"))
         if existing_user:
+            logger.warning(f"User creation failed: Email {data.get('email')} is already registered")  
             raise ValueError("The email is already registered")
 
         user = self.user_repository.create_user(
@@ -78,6 +88,7 @@ class UserService:
             }
         ).data
 
+        logger.info(f"User {user.email} created successfully") 
         return user_data
     
     def get_user_by_id(self, user_id):
@@ -90,8 +101,10 @@ class UserService:
         """
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
+            logger.warning(f"User retrieval failed: ID {user_id} not found")
             raise ValueError("User not found")
 
+        logger.info(f"User retrieved successfully: ID {user_id}") 
         return user
     
     def update_user(self, user_id, data):
@@ -105,9 +118,12 @@ class UserService:
         """
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
+            logger.warning(f"User update failed: ID {user_id} not found")
             raise ValueError("User not found")
 
-        return self.user_repository.update_user(user, data)
+        updated_user = self.user_repository.update_user(user, data)
+        logger.info(f"User {updated_user.email} updated successfully") 
+        return updated_user
     
     def delete_user(self, user_id):
         """
@@ -119,9 +135,12 @@ class UserService:
         """
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
+            logger.warning(f"User deletion failed: ID {user_id} not found") 
             raise ValueError("User not found")
 
-        return self.user_repository.delete_user(user)
+        email = user.email 
+        self.user_repository.delete_user(user)
+        logger.info(f"User {email} deleted successfully")
     
     def get_all_users(self):
         """
@@ -129,4 +148,6 @@ class UserService:
 
         :return: A queryset containing all users.
         """
-        return self.user_repository.get_all_users()
+        users = self.user_repository.get_all_users()
+        logger.info(f"Retrieved {users.count()} users") 
+        return users
