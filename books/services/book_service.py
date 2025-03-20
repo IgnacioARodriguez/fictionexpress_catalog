@@ -1,5 +1,7 @@
 from books.repositories.book_repository import BookRepository
 from books.serializers.book_serializer import BookSerializer
+from rest_framework.exceptions import NotFound
+
 
 class BookService:
     def __init__(self):
@@ -11,7 +13,7 @@ class BookService:
     def get_book_by_id(self, book_id):
         book = self.book_repository.get_book_by_id(book_id)
         if not book:
-            raise ValueError("Libro no encontrado")
+            raise NotFound("Libro no encontrado")
         return book
 
     def create_book(self, data):
@@ -34,5 +36,5 @@ class BookService:
     def delete_book(self, book_id):
         book = self.book_repository.get_book_by_id(book_id)
         if not book:
-            raise ValueError("Libro no encontrado")
+            raise NotFound("Libro no encontrado")
         self.book_repository.delete_book(book)

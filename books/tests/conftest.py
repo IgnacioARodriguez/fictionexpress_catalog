@@ -1,8 +1,8 @@
 import pytest
 from django.contrib.auth import get_user_model
 from books.models import Book, BookPage
-from django.conf import settings
-import django
+from unittest.mock import patch
+from books.services.book_service import BookService
 
 User = get_user_model()
 
@@ -45,3 +45,22 @@ def create_book_with_many_pages(db, create_editor_user):
     for i in range(1, 21): 
         BookPage.objects.create(book=book, page_number=i, content=f"Contenido de la página {i}")
     return book
+
+@pytest.fixture
+def book_service():
+    """Crea una instancia de BookService con un repositorio mockeado"""
+    with patch("books.services.book_service.BookRepository") as MockRepo:
+        mock_repo = MockRepo.return_value
+        service = BookService()
+        service.book_repository = mock_repo  # 🔹 Inyectamos el mock
+        return service, mock_repo
+    
+@pytest.fixture
+def editor_user(db):
+    """Crea un usuario con rol editor"""
+    return User.objects.create_user(username="editor", email="editor@example.com", password="password123", role="editor")
+
+@pytest.fixture
+def reader_user(db):
+    """Crea un usuario con rol reader"""
+    return User.objects.create_user(username="reader", email="reader@example.com", password="password123", role="reader")

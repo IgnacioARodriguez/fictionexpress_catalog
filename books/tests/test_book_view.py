@@ -88,3 +88,5 @@ def test_delete_book_unauthenticated(api_client, create_books):
     url = reverse("books-detail", args=[create_books[0].id])
     response = api_client.delete(url)
     assert response.status_code == 401  # Unauthorized
+
+
