@@ -23,10 +23,13 @@ class BookPagePagination(PageNumberPagination):
 
 class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet for retrieving book pages with pagination.
+    ViewSet for retrieving and creating book pages with pagination and RBAC.
 
     This endpoint allows users to list the pages of a specific book
     while applying pagination settings to optimize response size.
+
+    - Editors can create pages.
+    - Readers can only view pages.
     """
 
     serializer_class = BookPageSerializer
@@ -69,4 +72,29 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(f"Unexpected error retrieving pages for book ID {book_id}: {e}")
+            return Response({"error": "Internal server error", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    def create(self, request, book_id=None):
+        """
+        Creates a new page for a specific book. Only accessible to editors.
+
+        :param request: The HTTP request object.
+        :param book_id: The ID of the book to which the page belongs.
+        :return: The newly created page details in JSON format.
+        :raises Exception: If an unexpected server error occurs.
+        """
+        try:
+            logger.info(f"Creating page for book ID {book_id} by user {request.user.email}")
+            serializer = BookPageSerializer(data=request.data)
+            if serializer.is_valid():
+                page = self.page_service.create_book_page(book_id=book_id, data=serializer.validated_data)
+                logger.info(f"Page created with ID {page.id} for book {book_id}")
+                return Response(BookPageSerializer(page).data, status=status.HTTP_201_CREATED)
+            else:
+                logger.warning(f"Validation failed: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.error(f"Unexpected error creating page for book ID {book_id}: {e}")
             return Response({"error": "Internal server error", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -61,14 +61,13 @@ class BookService:
             serializer = BookSerializer(data=data)
             serializer.is_valid(raise_exception=True)
             book = self.book_repository.create_book(serializer.validated_data)
-            print('ACA', book)
-            logger.info(f"Book created successfully")  # ✅ Log successful creation
+            logger.info(f"Book created successfully")
             return book
         except ValidationError as e:
-            logger.warning(f"Book creation failed (validation error): {e}")  # ✅ Log validation errors
+            logger.warning(f"Book creation failed (validation error): {e}")
             raise
         except Exception as e:
-            logger.error(f"Unexpected error creating book: {e}")  # ✅ Log unexpected errors
+            logger.error(f"Unexpected error creating book: {e}")
             raise
 
     def update_book(self, book_id, data):

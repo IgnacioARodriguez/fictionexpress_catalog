@@ -11,7 +11,7 @@ from books.docs import (
     list_books_docs, retrieve_book_docs, create_book_docs, delete_book_docs
 )
 
-logger = logging.getLogger(__name__)  # Initialize logger for this module
+logger = logging.getLogger(__name__)
 
 class BookPagination(PageNumberPagination):
     """
