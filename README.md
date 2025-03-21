@@ -1,11 +1,11 @@
 # Fiction Express - Prueba Técnica Backend (Django + DRF)
 
-## 🚀 Descripción del Proyecto
+## Descripción del Proyecto
 API RESTful construida con Django Rest Framework para la gestión de un catálogo de libros, con control de acceso basado en roles (RBAC), autenticación JWT, y despliegue automatizado en AWS EC2 usando Docker y GitHub Actions.
 
 ---
 
-## 🏠 Tecnologías utilizadas
+## Tecnologías utilizadas
 - Python 3.10
 - Django 4+
 - Django REST Framework
@@ -18,7 +18,7 @@ API RESTful construida con Django Rest Framework para la gestión de un catálog
 
 ---
 
-## 📚 Características Implementadas
+## Características Implementadas
 
 ### Usuarios
 - CRUD completo
@@ -46,7 +46,7 @@ API RESTful construida con Django Rest Framework para la gestión de un catálog
 
 ---
 
-## 🚀 Despliegue en AWS
+## Despliegue en AWS
 
 ### Infraestructura:
 - EC2 Ubuntu 22.04 con Docker y Docker Compose
@@ -57,11 +57,9 @@ API RESTful construida con Django Rest Framework para la gestión de un catálog
 
 - http://http://51.21.132.18/
 
-*Actualmente sin HTTPS (Let's Encrypt requiere dominio).*
-
 ---
 
-## ♻️ Automatización (CI/CD)
+## Automatización (CI/CD)
 
 ### Desencadenado por:
 - `push` a `main`
@@ -80,7 +78,7 @@ API RESTful construida con Django Rest Framework para la gestión de un catálog
 
 ---
 
-## 🌐 Instrucciones para desarrollo local
+## Instrucciones para desarrollo local
 
 ### Requisitos previos
 - Tener Docker y Docker Compose instalados
@@ -111,7 +109,7 @@ http://localhost:8000/
 docker-compose exec app pytest -v
 ```
 
-## 🌐 Changelog
+## Changelog
 
 ### v1.0.0 
 
