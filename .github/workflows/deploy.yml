@@ -22,8 +22,10 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ejecutar tests
+      working-directory: ./fictionexpress_catalog
       run: |
-        python manage.py test
+        pip install pytest
+        pytest -v
 
     - name: Desplegar en EC2
       env:
