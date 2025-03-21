@@ -140,7 +140,6 @@ Para evitar que el backend Django se sobrecargue con el almacenamiento de evento
 - **Dashboards / BI Tools**: visualizan los datos de lectura en tiempo real.
 
 
-
 ### Formato de evento (ejemplo MongoDB)
 ```json
 {
