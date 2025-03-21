@@ -76,7 +76,6 @@ update_user_docs = extend_schema(
 
     **Permisos:**
     - Un usuario puede actualizar solo su propia cuenta.
-    - Administradores pueden modificar cualquier usuario.
     """,
     parameters=[
         OpenApiParameter("id", description="ID del usuario", required=True, type=int, location="path"),
