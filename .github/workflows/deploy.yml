@@ -8,21 +8,33 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Clonar el repositorio
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-    - name: Configurar SSH y desplegar en EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no ubuntu@51.21.132.18 << 'EOF'
-            cd /home/ubuntu/fictionexpress_catalog
-            git pull origin main
-            sudo docker-compose down
-            sudo docker-compose up -d --build
-          EOF
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Ejecutar tests
+      run: |
+        python manage.py test
+
+    - name: Desplegar en EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh -o StrictHostKeyChecking=no ubuntu@51.21.132.18 << 'EOF'
+          cd /home/ubuntu/fictionexpress_catalog
+          git pull origin main
+          sudo docker-compose down
+          sudo docker-compose up -d --build
+        EOF
