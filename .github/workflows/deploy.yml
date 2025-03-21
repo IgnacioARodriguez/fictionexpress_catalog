@@ -14,15 +14,15 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configurar SSH y desplegar en EC2
-      env:
-        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh -o StrictHostKeyChecking=no ubuntu@51.21.132.18 << 'EOF'
-          cd /home/ubuntu/fictionexpress_catalog
-          git pull origin main
-          sudo docker-compose down
-          sudo docker-compose up -d --build
-        EOF
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no ubuntu@51.21.132.18 << 'EOF'
+            cd /home/ubuntu/fictionexpress_catalog
+            git pull origin main
+            sudo docker-compose down
+            sudo docker-compose up -d --build
+          EOF
