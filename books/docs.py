@@ -58,11 +58,11 @@ create_book_docs = extend_schema(
                 "updated_at": "2024-03-20T12:00:00Z",
                 "pages": [
                     {
-                        "order": 1,
+                        "page_number": 1,
                         "content": "Esta es la primera página del libro."
                     },
                     {
-                        "order": 2,
+                        "page_number": 2,
                         "content": "Esta es la segunda página del libro."
                     }
                 ]
@@ -183,7 +183,7 @@ create_book_page_docs = extend_schema(
         OpenApiExample(
             name="Ejemplo de creación de página",
             value={
-                "order": 1,
+                "page_number": 1,
                 "content": "Este es el contenido de la primera página."
             },
             description="Ejemplo de cómo enviar datos para crear una página.",

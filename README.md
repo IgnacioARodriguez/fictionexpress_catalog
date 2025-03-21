@@ -3,6 +3,10 @@
 ## Descripción del Proyecto
 API RESTful construida con Django Rest Framework para la gestión de un catálogo de libros, con control de acceso basado en roles (RBAC), autenticación JWT, y despliegue automatizado en AWS EC2 usando Docker y GitHub Actions.
 
+#### Nota sobre el idioma de la documentación
+
+La documentación generada con Swagger/OpenAPI, así como los docstrings en el código fuente y los nombres de variables/clases, están redactados en inglés por una cuestión de buenas prácticas técnicas y estandarización internacional en proyectos de desarrollo.
+
 ---
 
 ## Tecnologías utilizadas
@@ -119,4 +123,82 @@ docker-compose exec app pytest -v
 - Swagger + Redoc habilitados
 - Despliegue en AWS EC2
 - CI/CD con tests y despliegue automatizado
+
+
+## Escalabilidad
+
+Para escalar la aplicación de FictionExpress ante un crecimiento masivo de usuarios y eventos de lectura, propongo los siguientes cambios arquitectónicos:
+
+#### 1. Arquitectura basada en eventos
+
+Para evitar que el backend Django se sobrecargue con el almacenamiento de eventos, se implementaría una arquitectura asíncrona:
+
+- **Frontend / App móvil**: envía eventos al backend (ej. lectura de una página).
+- **API Django (REST)**: encola los eventos en RabbitMQ/Kafka en lugar de procesarlos directamente.
+- **Worker Celery**: consume los eventos y guarda las métricas de lectura.
+- **MongoDB o TimescaleDB**: almacena los eventos para análisis posterior (engagement, abandono, duración).
+- **Dashboards / BI Tools**: visualizan los datos de lectura en tiempo real.
+
+
+
+### Formato de evento (ejemplo MongoDB)
+```json
+{
+  "user_id": 42,
+  "book_id": 12,
+  "page_id": 3,
+  "started_at": "2025-03-21T10:30:00Z",
+  "duration_seconds": 55,
+  "device": "mobile"
+}
+```
+
+#### 2. Caché de lecturas
+
+Para mejorar la velocidad de respuesta de la API, se podría implementar una capa de caché con Redis: 
+
+- Implementar Redis como capa de caché.
+- Almacenar temporalmente las páginas de los libros más leídas.
+- Configurar un TTL (time-to-live) para descartar páginas inactivas.
+- Usar una política de reemplazo LRU (Least Recently Used) para mantener las más consultadas.
+
+Especialmente útil en libros con alta demanda o primeros capítulos muy visitados
+
+#### 3. Escalado horizontal
+
+Si la aplicación crece y el servidor EC2 no es suficiente, se podría escalar horizontalmente:
+
+- Añadir un Load Balancer (ELB) para distribuir peticiones entre instancias.
+- Levantar múltiples instancias EC2 corriendo los contenedores vía Docker Compose.
+- Usar un orquestador de contenedores (como ECS o Kubernetes) para gestión automática y escalado.
+- Migrar la base de datos a un servicio gestionado como RDS o Aurora para mejorar escalabilidad y disponibilidad.
+
+Esto permitiría que la aplicación escale según demanda sin perder rendimiento ni afectar la experiencia de los lectores.
+
+---
+
+### Experiencia previa con procesamiento de datos a gran escala
+
+Aunque no he trabajado directamente con sistemas que manejen millones de usuarios simultáneos, sí he participado en aplicaciones que procesan grandes volúmenes de datos de lectura en entornos productivos.
+
+#### Contexto en Cepsa
+
+Durante mi experiencia en **Cepsa**, formé parte de proyectos orientados al procesamiento de datos históricos y en tiempo real, relacionados con consumo energético, operaciones y sensores distribuidos.
+
+Trabajé con arquitecturas basadas en **microservicios**, donde distintos servicios intercambiaban información a través de **Apache Kafka**. El sistema requería procesar y transformar continuamente flujos de datos usando **Python (Pandas / PySpark)** y almacenarlos en bases de datos **SQL**. Se priorizaba el rendimiento y la integridad, especialmente en pipelines de lectura que alimentaban dashboards analíticos y reportes de negocio.
+
+#### Tecnologías utilizadas
+
+- **Apache Kafka** como bus de eventos para coordinar microservicios.
+- **PostgreSQL y SQL Server** para almacenamiento estructurado.
+- **Python** para procesos ETL, transformación y validación de datos.
+- **Docker y CI/CD** para orquestación, despliegue y mantenimiento de los servicios.
+
+#### Conclusión
+
+Esta experiencia me preparó para diseñar soluciones escalables y desacopladas, comprender el impacto del volumen de datos en el rendimiento, y trabajar en entornos donde la estabilidad, trazabilidad y precisión son fundamentales.
+
+
+
+
 
