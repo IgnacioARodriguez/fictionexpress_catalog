@@ -25,7 +25,7 @@ def test_list_users_as_reader(api_client, create_test_user):
 @pytest.mark.django_db
 def test_create_user(api_client):
     """Test to create a new user"""
-    url = reverse("user-signup")
+    url = reverse("user-list")
     data = {
         "username": "newuser",
         "email": "newuser@example.com",

@@ -31,3 +31,43 @@ class BookPageService:
         except Exception as e:
             logger.error(f"Error retrieving pages for book ID {book_id}: {e}") 
             return None
+        
+
+    def get_book_page(self, book_id, page_id):
+        """
+        Fetch a specific page of a book.
+
+        :param book_id: The ID of the book containing the page.
+        :param page_id: The ID of the page to retrieve.
+        :return: The requested page object.
+        """
+        try:
+            page = self.page_repository.get_page_by_id(book_id, page_id)
+            if page:
+                logger.info(f"Retrieved page {page_id} for book ID {book_id}")
+            else:
+                logger.warning(f"Page {page_id} not found for book ID {book_id}")
+            return page
+        except Exception as e:
+            logger.error(f"Error retrieving page {page_id} for book ID {book_id}: {e}")
+            return None
+        
+
+    def get_page_by_id(self, book_id, page_id):
+        """
+        Fetch a specific page of a book.
+
+        :param book_id: The ID of the book containing the page.
+        :param page_id: The ID of the page to retrieve.
+        :return: The requested page object.
+        """
+        try:
+            page = self.page_repository.get_page_by_id(book_id, page_id)
+            if page:
+                logger.info(f"Retrieved page {page_id} for book ID {book_id}")
+            else:
+                logger.warning(f"Page {page_id} not found for book ID {book_id}")
+            return page
+        except Exception as e:
+            logger.error(f"Error retrieving page {page_id} for book ID {book_id}: {e}")
+            return None

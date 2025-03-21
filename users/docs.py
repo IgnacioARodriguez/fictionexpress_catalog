@@ -94,3 +94,5 @@ logout_user_docs = extend_schema(
         400: {"description": "Token inválido o expirado"},
     },
 )
+
+patch_user_docs = extend_schema(exclude=True)

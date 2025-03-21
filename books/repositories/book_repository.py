@@ -51,12 +51,12 @@ class BookRepository:
         :return: The created book instance.
         """
         try:
-            pages_data = data.pop("pages", [])  # Extract pages data if present
-            book = Book.objects.create(**data)  # Create book instance
+            pages_data = data.pop("pages", [])
+            book = Book.objects.create(**data)
             logger.info(f"Book created successfully: ID {book.id}, Title: {book.title}") 
 
             for page_data in pages_data:
-                BookPage.objects.create(book=book, **page_data)  # Create book pages
+                BookPage.objects.create(book=book, **page_data)
             logger.info(f"{len(pages_data)} pages added to book ID {book.id}") 
 
             return book
@@ -75,7 +75,7 @@ class BookRepository:
         """
         try:
             for key, value in data.items():
-                setattr(book, key, value)  # Dynamically update book attributes
+                setattr(book, key, value) 
             book.save()
             logger.info(f"Book updated successfully: ID {book.id}, Title: {book.title}")  
             return book
@@ -91,7 +91,7 @@ class BookRepository:
         :param book: The book instance to delete.
         """
         try:
-            book_id = book.id  # Store ID before deletion for logging
+            book_id = book.id 
             title = book.title
             book.delete()
             logger.info(f"Book deleted successfully: ID {book_id}, Title: {title}")  
