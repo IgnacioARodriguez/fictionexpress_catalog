@@ -52,24 +52,52 @@ INSTALLED_APPS = [
 SPECTACULAR_SETTINGS = {
     "TITLE": "FictionExpress API",
     "DESCRIPTION": """
-    Bienvenido a la **API de FictionExpress**.  
-    Esta API permite a los editores administrar libros y a los lectores consumir contenido.  
+        Welcome to the **FictionExpress API**
 
-    🔹 **Autenticación:**  
-    - La API usa autenticación basada en JWT.  
-    - Para acceder a endpoints protegidos, debes obtener un token con `POST /api/users/login/`, seleccionar el boton Authorize e ingresar el token en el campo.
-    "🔹 **Roles de Usuario:**  
-    - 📚 **Lectores:** Pueden ver libros, pero no modificarlos.  
-    - ✍️ **Editores:** Pueden crear, actualizar y eliminar libros.  
+        This API allows **editors** and **readers** to interact with the FictionExpress book catalog.  
+        It is designed to easily integrate with web or mobile platforms and offers secure JWT-based authentication.
 
-    🔹 **Recursos Disponibles:**  
-    - `/api/users/` → Gestión de usuarios  
-    - `/api/books/` → Gestión de libros  
-    - `/api/auth/login/` → Autenticación y obtención de tokens  
-    - `/api/auth/logout/` → Cierre de sesión  
+        ---
 
-    📌 **Para más información, consulta cada endpoint en la documentación interactiva.**
-    """,
+        ### Authentication
+
+        - To access protected endpoints, you must authenticate with JWT.
+        - Create a user via `POST /api/users/`.
+        - Obtain your token via `POST /api/users/login/`.
+        - Then, click the **Authorize** button and enter the token as: <access_token>.
+        - To log out, use `POST /api/users/logout/`.
+
+        ---
+
+        ### User Roles
+
+        - **Editors**  
+        - Create, update, and delete books and pages.
+        - **Readers**  
+        - Can only view books and their pages.
+
+        ---
+
+        ### Main Endpoints
+
+        - `POST /api/users/login/` → Log in  
+        - `POST /api/users/logout/` → Log out  
+        - `GET /api/books/` → List books  
+        - `POST /api/books/` → Create book (editors)  
+        - `GET /api/books/{id}/pages/` → View book pages  
+        - `POST /api/books/{id}/pages/` → Create page (editors)
+
+        ---
+
+        ### Additional Notes
+
+        - All endpoints return responses in JSON format.
+        - This documentation is interactive: you can test the endpoints directly from here.
+        - Remember to use pagination to get results in parts (`?page=1&page_size=10`).
+
+        ---
+        """
+    ,
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
