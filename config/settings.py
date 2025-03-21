@@ -126,7 +126,7 @@ DATABASES = {
         'NAME': 'fictionexpress_db',
         'USER': 'fictionexpress_user',
         'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }

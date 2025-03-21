@@ -90,7 +90,7 @@ update_book_docs = extend_schema(
         500: {"description": "Error interno del servidor"},
     },
     parameters=[
-        OpenApiParameter(name="pk", description="ID del libro a actualizar", required=True, type=int, location=OpenApiParameter.PATH)
+        OpenApiParameter(name="pk", description="ID del libro a actualizar", required=True, type=int, location="path")
     ],
     examples=[
         OpenApiExample(
@@ -143,23 +143,7 @@ list_book_pages_docs = extend_schema(
     ]
 )
 
-retrieve_book_page_docs = extend_schema(
-    summary="Obtiene una página específica de un libro",
-    description="""
-    Recupera los detalles de una página en particular dentro de un libro.
-
-    **Notas:**
-    - Disponible para todos los usuarios autenticados.
-    """,
-    responses={
-        200: BookPageSerializer(),
-        404: {"description": "Página no encontrada"},
-    },
-    parameters=[
-        OpenApiParameter(name="book_id", description="ID del libro", required=True, type=int, location=OpenApiParameter.PATH),
-        OpenApiParameter(name="id", description="ID de la página dentro del libro", required=True, type=int, location=OpenApiParameter.PATH)
-    ]
-)
+retrieve_book_page_docs = extend_schema(exclude=True)
 
 create_book_page_docs = extend_schema(
     summary="Crea una nueva página dentro de un libro",
