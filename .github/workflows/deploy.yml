@@ -22,7 +22,6 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ejecutar tests
-      working-directory: ./fictionexpress_catalog
       run: |
         pip install pytest
         pytest -v
