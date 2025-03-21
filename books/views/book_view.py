@@ -8,7 +8,7 @@ from books.services.book_service import BookService
 from books.serializers.book_serializer import BookSerializer
 from books.permissions.book_permissions import IsEditorOrReadOnly
 from books.docs import (  
-    list_books_docs, retrieve_book_docs, create_book_docs, delete_book_docs
+    list_books_docs, retrieve_book_docs, create_book_docs, delete_book_docs, update_book_docs
 )
 
 logger = logging.getLogger(__name__)
@@ -117,6 +117,7 @@ class BookViewSet(viewsets.ViewSet):
             logger.error(f"Unexpected error creating book: {e}")
             return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @update_book_docs
     def update(self, request, pk=None):
         """
         Updates a book by its ID.

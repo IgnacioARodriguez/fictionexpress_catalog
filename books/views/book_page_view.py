@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import NotFound
 from books.services.book_page_servicce import BookPageService
 from books.serializers.book_page_serializer import BookPageSerializer
-from books.docs import list_book_pages_docs
+from books.docs import list_book_pages_docs, retrieve_book_page_docs, create_book_page_docs
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +75,7 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"error": "Internal server error", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+    @create_book_page_docs
     def create(self, request, book_id=None):
         """
         Creates a new page for a specific book. Only accessible to editors.
@@ -98,3 +99,14 @@ class BookPageViewSet(viewsets.ReadOnlyModelViewSet):
         except Exception as e:
             logger.error(f"Unexpected error creating page for book ID {book_id}: {e}")
             return Response({"error": "Internal server error", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+    @retrieve_book_page_docs
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieve a single page of a book using the service."""
+        book_id = kwargs.get('book_id')
+        page_id = kwargs.get('id')
+
+        page = self.page_service.get_book_page(book_id, page_id)
+        serializer = self.get_serializer(page)
+        return Response(serializer.data)
